@@ -1,34 +1,35 @@
-# packages
-# packages <- c("dplyr", "tibble", "ggplot2", "purrr", "mgcv", "tidymv",
-#               "SamplingBigData", "BalancedSampling", "RColorBrewer",
-#               "animation", "gridExtra", "ggpubr", "sp", "metR")
-# lapply(packages, library, character.only = TRUE)
+#### LOADING REQUIRED PACKAGES ####
 
-# library(SamplingBigData)
-# library(BalancedSampling)
-# library(RColorBrewer)
-# library(animation)
-# library(metR)
+packages <- c("dplyr", "tibble", "ggplot2", "purrr", "mgcv", "tidymv",
+              "SamplingBigData", "BalancedSampling", "RColorBrewer",
+              "animation", "gridExtra", "ggpubr", "sp", "metR")
+lapply(packages, library, character.only = TRUE)
 
+#### SCENARIO SETTINGS ####
+
+# total sample size
 samps <- paste0(240, "samps\\") # number of samples to take over the whole period
 
+# sampling frequency
 spe <- 48 # samples per event
 noe <- 5 # number of events
 freq <- paste0(spe, 'x', noe, "\\") # frequency
 
-# path to save images to
+#### SAVING/LOADING PATHS ####
+
+# saving path
 path0 <- "C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\"
-# path <- paste0(path0, samps, freq)
+# subfolder based on sampling frequency
 path <- paste0(path0, samps, noe, '\\')
 
-# plume data
+# loading plume data
 load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//data//complex_plume.RData")
 
-# well coordinates
+# loading well coordinates
 load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//Balanced Sampling for Groundwater Monitoring//Comparison of BSMs//well_placement//rand_3.RData")
 
-
-######## this bit trims true.data based on well coordinates so we only work with the convex hull ##########
+#### TRIMMING DATA (OPTIONAL) ####
+# to work with the convex hull only (area enclosed by wells) instead of the whole spatial domain, enable next part:
 
 # well coordinates without well.id
 ps <- cbind(well_coords$X1, well_coords$X2)
@@ -45,17 +46,20 @@ true.data <- true.data.inpoly %>% filter(true.data.inpoly > 0)
 # removing indicator column
 true.data <- true.data %>% select(-true.data.inpoly)
 
-# checking resultin plot of convex hull
+# checking plot of convex hull
 # ggplot(data = true.data %>% filter(Time == 3467.5), aes(x=X1, y=X2)) +
 #   geom_point(aes(color=log(y)))
 
-# counting number of sampling events (time slices) ------------------------
+#### DATA PREPARATION ####
 
 # time slices
 ts <- unique(true.data$Time)
+
+# splitting time slices into past and future sampling events
 ts1 <- ts[1:10]
 td2 <- ts[11:20]
 
+# selecting future time slices based on number of desired sampling events
 if (noe == 10){
   
   ts2 <- ts[11:20]
@@ -86,43 +90,44 @@ if (noe == 10){
   
 } else {break}
 
-
 # total number of wells
 W = nrow(well_coords)  # 48 wells, 1 sampling time
 
-# divide total possible samples by this number
-div <- W/spe
-
-# number of wells to be sampled per time slice
-w = W/div
+# number of wells to be sampled per event
+div <- W/spe # number of wells / samples per event
+w = W/div 
 
 # checking total number of samples
 length(ts2)*w
 
-# filtering simulated data at well coordinates ----------------------------
+#### GENERATING OBSERVATIONS FROM TRUE DATA ####
 
-# first 10 sampling times
+# splitting data into past and future
 true.data1 <- true.data %>% filter(Time %in% ts1)
 true.data2 <- true.data %>% filter(Time %in% td2)
 
-# filtering data to mimic observations - these are all the potential sampling points and times
+# filtering data by wells to get past observations
 obs <- left_join(well_coords, true.data1)
-obs.og <- obs # this will be obs without noise
-# possible future observations
+
+# store original observations without noise
+obs.og <- obs
+
+# all potential future observations
 obs.fut <- left_join(well_coords, true.data2)
+
+# storing original values without noise
 obs.fut.og <- obs.fut
 
+# adding measurement noise
+snr <- 0.15 # amount: 15% 
 
-# adding measurement noise to observations --------------------------------
-
-# adding noise 
-snr <- 0.15 
-# set.seed(1)
+# past observations
 obs$y <- obs$y * rnorm(nrow(obs), 1, snr)
+
+# future observations
 obs.fut$y <- obs.fut$y * rnorm(nrow(obs.fut), 1, snr)
 
-
-##### FUNCTIONS ###############################################################
+#### SHORTEST DISTANCE COMPUTING FUNCTION ####
 
 # calculates euclidiean distance between two sets of x,y coordinates
 euclidean_dist <- function(P1, P2) sqrt(sum((P1 - P2)^2))
@@ -142,10 +147,9 @@ closest <- function(data, point) {
   colnames(closest.p) <- c("X1", "X2", "D")
   
   return(closest.p)
-  
 }
 
-# calculates the shortest distance between the plume and the well
+# calculates the shortest distance between the plume and the well based on a concentration limit
 plumedist <- function(data, point, plume.limit) {
   
   distances <- double()
@@ -164,37 +168,18 @@ plumedist <- function(data, point, plume.limit) {
   return(distances)
 }
 
+#### MODEL OF PAST OBSERVATIONS ####
 
-##### TEST PLOTTING ###########################################################
-
-# # coordinates of well 1
-# P1 <- c(well_coords[10,2], well_coords[10,3])
-# # 
-# # # plume delineation limit
-# limit = 0.002
-# # 
-# # # distance of plume to well 1 time series
-# dist_to_plume <- plumedist(data = hist.preds, point = P1, plume.limit = limit)
-# # 
-# # # plotting results
-# ggplot(data = dist_to_plume, mapping = aes(x=time, y=D)) +
-#   geom_point()
-#   #geom_smooth()
-
-###############################################################################
-
-
-# fitting model to historical observations
-
-# loading smst functions
+# loading smst modeling functions
 source("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//sm-st.R",
        chdir = TRUE)
 
 # model settings
-nseg = c(6,6,6)
-bdeg = 2
-pord = 1
+nseg = c(6,6,6) # number of splines in 3 dimensions
+bdeg = 2 # type of spline: quadtratic (2), cubic (3)
+pord = 1 # penalty type: first order derivatives (1), second order derivatives (2)
 
+# model of past observations
 hist.mod <- sm.st(
   x = obs[,2:3],
   t = obs[,4],
@@ -205,6 +190,9 @@ hist.mod <- sm.st(
   pord = pord
 )
 
+# Creating B matrices 
+# - this way is faster than using the predict function every time
+
 hist.xrange <- rbind(c(1, 100), 
                 c(1, 35), 
                 c(0, 1642.5))
@@ -214,36 +202,43 @@ fut.xrange <- rbind(c(1, 100),
                     c(1825, 3467.5))
 
 rownames(hist.xrange) <- c("X1", "X2", "Time")
+
 rownames(fut.xrange) <- c("X1", "X2", "Time")
 
+# B matrix of past observations
 hist.B <- st.matrices(true.data1[,1:3], 
                     xrange = hist.xrange, 
                     nseg = nseg,
                     bdeg = bdeg,
                     pord = pord)
 
-# disable this part for testing spatial models
+# B matrix of future observations
 fut.B <- st.matrices(true.data2[,1:3],
                      xrange = fut.xrange,
                      nseg = nseg,
                      bdeg = bdeg,
                      pord = pord)
 
+# model predictions of past observations
 hist.preds <- hist.B$B %*% hist.mod$alpha
+
+# binding predictions to original data and removing true values
 hist.preds <- cbind(true.data1, hist.preds) %>%
   subset(select = -y)
 colnames(hist.preds)[4] <- 'y'
 
+#### CALCULATING PAST WELL-PLUME DISTANCES ####
 
-# calculating plume distance for all wells through time
-
-# plume delineation limit - base it on realistic limits 
-# (e.g. Benzene: max in GWSDAT examples = 500 mg/L (max solubility at 9C is 1810 mg/L)
-# allowed limit in GW by WHO = 0.01 mg/L -> that is at 0.002% of max)
+# plume delineation limit:
+  # in data: 0-100 - assume it means % of max solubility
+  # Benzene: max solubility at 9C is 1810 mg/L
+  # allowed limit in GW by WHO = 0.01 mg/L -> that is at 0.002% of max
 limit = 0.002
 
+# empty list to collect distances within loop
 all_dist <- list()
 
+# loop through past observations and wells to compute distances
 for (t in 1:nrow(well_coords)) {
   
   P <- c(well_coords[t,2], well_coords[t,3])
@@ -254,9 +249,7 @@ for (t in 1:nrow(well_coords)) {
   
 }
 
-# kernel function for tuning parameters #####################################
-
-# looking at D distribution to help scale kernel
+# looking at distribution of distances
 Ds <- double()
 
 for (r in 1:length(all_dist)) {
@@ -266,177 +259,45 @@ for (r in 1:length(all_dist)) {
 
 colnames(Ds) <- "D"
 
-# sometimes there are NAs when the plume limit cannot deliniate the plume at time = 0
+# sometimes there are NAs when plume cannot be deliniated at time = 0
 Ds <- na.omit(Ds)
 
 # mean distance
 mD <- mean(Ds$D)
+
 # median distance
 meD <- median(Ds$D)
+
 # maximum distance
 max.dist <- max(Ds)
 
-# histogram of plume distances with mean and median
-# hist(Ds$D)
-# abline(v = mD, col="red")
-# abline(v = meD, col="blue")
+#### FORECASTING FUTURE WELL PLUME DISTANCES ####
 
-
-################### OLD KERNEL STUFF ##########################
-# h <- 1 # to avoid 0s, 1 is added to the minimum y value
-# s <- 5 # sigma - controls how quickly the function drops to 1
-# y_scaler <- .3 # controls the height of the function, for half-normal distribution its pi
-# 
-# # half-normal kernel function
-# k_function <- function(x){h+(sqrt(2)/(sqrt(y_scaler)))*exp(-((x^2)/(2*s^2)))}
-# 
-# # plotting kernel
-# ggplot(data = data.frame(x=c(0,max.dist)), aes(x=x)) +
-#   stat_function(fun = k_function)
-# 
-# # checking kurtosis
-# v1 <- seq(1,max.dist, by = 1)
-# v2 <- k_function(v1)
-# 
-# PerformanceAnalytics::kurtosis(v2, method = "excess")
-
-# set distance where half of max weight should be (mD, meD or a distance)
-# p.halfweight <- meD
-# height <- 10
-#
-# vector <- seq(from = 0.0001, to = 1, by = 0.001)
-# 
-# # automatic x-axis scaling
-# for (q in 1:length(vector)) {
-#   
-#   # variables for x-axis scaling
-#   r <- vector[q]
-#   
-#   ### half-normal function ###
-#   
-#   k_function <- function(x){h+(sqrt(2)/(s*sqrt(pi/height)))*exp(-((r*x^2)/(2*s^2)))}
-#   
-#   # break if function of median (or mean) distance is half of max weight
-#   if (k_function(p.halfweight)>((k_function(0)-1)/2+1)-.1 & k_function(p.halfweight)<((k_function(0)-1)/2+1)+.1) break
-#   
-#   ### linear function ###
-#   
-#   # k_function <- function(x){1.8*h-r*x}
-#   
-#   # break linear function when k_function(max.dist)=0
-#   # if (k_function(max.dist)>= 1 & k_function(max.dist)<1.06) break
-# }
-
-######### PLOTTING AND TESTING KERNEL FUNCTION #################
-
-# testing function on median distance
-# k_function(meD)
-# 
-# # plot of final kernel function
-# ggplot(data = data.frame(x=c(0,max.dist)), aes(x=x)) +
-#   stat_function(fun = k_function)
-# 
-# alltpars <- do.call('rbind', all.t.pars)
-# alldists <- do.call('rbind', all.d.preds)
-# 
-# alltest <- cbind(alldists, alltpars)
-# 
-# plot(alltest)
-
-##############################################################################
-
-#### TESTING MODELLING ########################################################
-
-# # can select any well to plot plume distance time series for
-# ggplot(data = all_dist[[5]], mapping = aes(x=time, y=D)) +
-#   geom_point() +
-#   geom_smooth(method = "glm", method.args = list(family = gaussian(link = "log")), fullrange=TRUE) +
-#   xlim(0, 3467.5) +
-#   ylim(0, 25)
-# #
-# # # pulling distance time series for selected well
-# data <- as.data.frame(cbind(all_dist[[5]]$time, all_dist[[5]]$D)) %>%
-#   map_df(rev)
-# colnames(data) <- c("time", "D")
-# #
-# # # preparing new data for prediction
-# new.data <- as.data.frame(ts2)
-# colnames(new.data) <- "time"
-# #
-# # # fitting model
-# model <- glm(D+1 ~ time, data = all_dist[[5]], family = gaussian(link = "log"))
-# 
-# # plot fitted values
-# plot(x=model$model$`time`, y=model$fitted.values)
-# 
-# # splines package, might need degrees of freedom - try to see if there is a constrained spline package
-# # # predicting for new data (second half of true.data sampling campaigns)
-# 
-# new.data$D <- predict.glm(model, newdata = new.data, type="response")
-# new.data <- new.data %>% mutate(D=D-1)
-# #
-# # new.data2 <- cbind(new.data, preds$fit)
-# # colnames(new.data2) <- c("time", "D")
-# 
-# # # # concatenating data
-# predss <- rbind(data, new.data)
-# # #
-# # # # plotting predicted change in distance
-# ggplot(data = predss, mapping = aes(x=time, y=D)) +
-#   geom_point() +
-#   geom_smooth(method = 'glm', method.args = list(family = gaussian(link = "log"))) +
-#   xlim(0, 3467.5) +
-#   ylim(0, 25)
-
-###############################################################################
-
-# calculating tuning parameters for each well for each time slice
-
+# future sampling times
 new.data <- as.data.frame(ts2)
 colnames(new.data) <- "time"
 
-# all.t.pars <- list()
+# creating empty lists for collecting distance predictions and standard errors within the loop
 all.d.preds <- list()
 all.se <- list()
 
+# forecasting distances based on past time-series using GLMs
 for (p in 1:length(all_dist)) {
   
+  # creating time series data
   data <- as.data.frame(cbind(all_dist[[p]]$time, all_dist[[p]]$D)) %>%
     map_df(rev)
   colnames(data) <- c("time", "D")
   
-  # replace NAs with something - look into this 
-  # all_dist[[i]][is.na(all_dist[[i]])] <- max(all_dist[[i]]$D, na.rm = TRUE)
-  
+  # GLM model
   model <- glm(D+1 ~ time, data = data, family = gaussian(link = "log"))
   
-  # # predicting for new data (second half of true.data sampling campaigns)
-  # new.data$D <- predict.glm(model, newdata = new.data, type = "response")
-  # new.data <- new.data %>% mutate(D = D-1)
-  # new.data$D[new.data$D<0] <- 0 #### here need to replace negative values with 0s
-  # 
-  # # saving preds
-  # all.d.preds[[p]] <- as.data.frame(new.data$D)
-  
-  # testing saving standard errors
+  # computing predictions
   preds <- predict.glm(model, newdata = new.data, type = "response", se.fit = TRUE)
+  # removing 1 added in the model
   preds$fit <- preds$fit-1
+  # negative distances should just be 0s
   preds$fit[preds$fit < 0] <- 0
-  
-  ############################################
-  
-  # # # look at distance model predictions 
-  # new.data2 <- cbind(new.data, preds$fit)
-  # colnames(new.data2) <- c("time", "D")
-  # # 
-  # # # # # concatenating data
-  # predss <- rbind(data, new.data2)
-  # # 
-  # # # # # plotting predicted change in distance
-  # print(ggplot(data = predss, mapping = aes(x=time, y=D)) +
-  #   geom_point())
-  
-  ############################################
   
   # saving preds
   all.d.preds[[p]] <- preds$fit
@@ -444,64 +305,27 @@ for (p in 1:length(all_dist)) {
   # saving standard errors
   all.se[[p]] <- preds$se.fit
   
-  ## for each sampling time - tuning parameters will be based on predicted 
-  ## distance from the plume
-  
-  # t.pars <- double()
-  # 
-  # for (o in 1:nrow(new.data)) {
-  #   
-  #   # tuning params from kernel function
-  # 
-  #   t.par <- k_function(new.data[o,2])
-  #   
-  #   t.pars <- rbind(t.pars, t.par)
-  # 
-  # }
-  # 
-  # all.t.pars[[p]] <- t.pars
-  
-}
+} 
 
-############################################
-
-# # # look at distance model predictions 
-# new.data2 <- cbind(new.data, preds$fit)
-# colnames(new.data2) <- c("time", "D")
-# # 
-# # # # # concatenating data
-# predss <- rbind(data, new.data2)
-# # 
-# # # # # plotting predicted change in distance
-# ggplot(data = predss, mapping = aes(x=time, y=D)) +
-#   geom_point()
-
-############################################
-
-# Put kernel here and you can make sigma dependent on standard error - calculate lower CI for all predictions and choose the lowest? 
+#### CREATING AND SCALING KERNEL FUNCTION ####
 
 # standard errors for tuning sigma
 unlist.se <- unlist(all.se)
+# median or max
 median.se <- median(unlist.se)
 max.se <- max(unlist.se)
 
+# tuning sigma - controls how quickly the function drops to 1
+s <- median.se
 
-# equal inclusion weights for tuning y_scaler
-# equal weights
+# tuning y-scalar - controls the height of the function, for half-normal distribution its pi
 ep <- rep(w/W, W)
-
-
-h <- 1 # to avoid 0s, 1 is added to the minimum y value
-s <- median.se # sigma - controls how quickly the function drops to 1
-# make this dependent on the number of wells and the amount of samples you want per slice
 y_scaler <- ep[1] # controls the height of the function, for half-normal distribution its pi
 
 # half-normal kernel function
 k_function <- function(x){(1/y_scaler) * (sqrt(2)/(sqrt(pi)))*exp(-((x^2)/(2*s^2)))}
 
-# add 1 later when multiplying weights
-
-# filename
+# saving png of kernel function to save path
 png(paste0(path, "kernel.png"), width = 620, height = 400)
 
 # plotting kernel
@@ -510,10 +334,12 @@ ggplot(data = data.frame(x=c(0,max.dist)), aes(x=x)) +
 
 dev.off()
 
-# calculating tuning parameters using the kernel function
+#### TUNING PARAMETERS FROM KERNEL FUNCTION ####
 
+# empty list for collecting tuning parameters in the loop
 all.t.pars <- list()
 
+# calculating tuning parameters
 for (o in 1:length(all.d.preds)) {
   
   t.pars <- double()
@@ -532,10 +358,12 @@ for (o in 1:length(all.d.preds)) {
   
 }
 
-# tuning params for per time slices
+#### TUNING THE INCLUSION PROBABILITIES ####
 
+# empty list for collecting inclusion probs
 ups <- list()
 
+# computing inclusion probs
 for (m in 1:length(ts2)) {
   
   tps <- double()
@@ -545,7 +373,7 @@ for (m in 1:length(ts2)) {
     tps <- rbind(tps, tp)
   }
   
-  # scaling weights by tuning params
+  # scaling probs by tuning params
   sp <- ep * tps
   
   # constant for re-scaling
@@ -554,64 +382,52 @@ for (m in 1:length(ts2)) {
   # re-scaling weigths so they sum to required number of samples
   up <- sp*c
   
-  # checking sum
-  # sum(up)
-  
+  # adding to list
   ups[[m]] <- up
   
 }
 
+#### SAMPLING SIMULATION LOOP ####
 
-# Sampling ----------------------------------------------------------------
-
-# equal weights ######################################################
-
-# the number of wells to be sampled in each slice depending on n  
+# the number of wells to be sampled in each slice  
 samp.well.nr <- w
 
-# well list for the sampling
+# list of wells for sampling
 well.list <- cbind(well_coords$well.id, well_coords$X1, well_coords$X2)
 
-# model settings
-# nseg = c(6,6,6)
-# bdeg = 2
-# pord = 1
-
-# loading smst functions
-# source("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//sm-st.R",
-#        chdir = TRUE)
-
-# loading matrix B for predictions
-# load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//Balanced Sampling for Groundwater Monitoring//Comparison of BSMs//mat_B//simple_B.RData")
-
-
 # results will be collected here in the loop
+# rmse 
 results <- data.frame(double())
+# rmse only in plume area
 results.plume <- data.frame(double())
+# rmse outside plume area
 results.out <- data.frame(double())
+# ratio of samples from plume
 in.ratios <- data.frame(double())
+# spatial balance values
 sbs <- data.frame(double())
+# plume mass (sum of concentrations)
 pmass <- data.frame(double())
 
 # collecting samples
+# eLPM
 lpm.app2.samples <- list()
+# SRS
 rand.app2.samples <- list()
+# pLPM
 lpm.up.samples <- list()
 
+# runnning simulations
 for (i in 1:100) {
   
-  # all samples ####################################################
+  # all potential samples ####################################################
   
   # spatial balance when taking all samples (for comparison)
   all.sb <- BalancedSampling::sb(p=rep(nrow(well_coords)/nrow(well_coords), nrow(well_coords)), x=cbind(well_coords$X1, well_coords$X2), s=c(well_coords$well.id))
-  
-  # disabled for testing constant samp locs
+  # all sb values
   all.sbs <- rep(all.sb, length(ts2))
-  
-  # spatial model
-  # all.model <- mgcv::gam(data = obs.fut, formula = log(y) ~ s(X1,X2, k=6))
 
-  # disabeled for testing spatial model above
+  # model of future observations
   all.model <- sm.st(
     x = obs.fut[,2:3],
     t = obs.fut[,4],
@@ -621,76 +437,49 @@ for (i in 1:100) {
     bdeg = bdeg,
     pord = pord
   )
-  
-  ################################## Whole domain
-  
-  # spatial model
-  # all.preds <- predict.gam(all.model, newdata = true.data2)
-  
-  # disabeled for testing spatial model
-  # calculating predictions on the grid
+
+  # calculating predictions
   all.preds <- fut.B$B %*% all.model$alpha
-  
-  # spatial model
-  # all.preds <- cbind(true.data2, all.preds)
-  
-  # spatial model
-  # all.rmspe <- sqrt(sum((log(all.preds$y) - all.preds$all.preds)^2)/nrow(all.preds))
-  
-  # disabeled for testing spatial model
-  # calculating rmspe
+
+  # calculating rmse for entire surface
   all.rmspe <- sqrt(sum((log(true.data2$y) - all.preds)^2)/nrow(all.preds))
   
-  # RMSE - only observations
+  # calculating rmse for only the observations
   all.obs.preds <- predict.smst(all.model)
-  
   all.rmse <- sqrt(sum((log(obs.fut$y) - all.obs.preds)^2)/length(all.obs.preds))
   
-  ################################## Plume only
+  # Plume area only #
   
-  # disabled for testing spatial model
   # filtering predictions for plume only
   all.plume.preds <- cbind(true.data2, all.preds) %>% filter(true.data2$y >= limit)
-  
-  # spatial model
-  # all.plume.preds <- all.preds %>% filter(y >= limit)
 
-  #calculating rmspe for plume only
+  # calculating rmse for plume only
   all.plume.rmspe <- sqrt(sum((log(all.plume.preds$y) - all.plume.preds$all.preds)^2)/nrow(all.plume.preds))
   
-  # Plume mass
+  # calculating plume mass
   all.pred.plume <- cbind(true.data2, all.preds) %>% filter(all.preds >= log(limit))
-  
   all.pmass <- sum(exp(1)^all.pred.plume$all.preds)/3500
   
-  ################################## without plume
+  # Area outside plume only #
   
-  # disabled for testing spatial model
   # filtering predictions
-  all.out.preds <- cbind(true.data2, all.preds) %>% filter(true.data2$y < limit)
-  
-  # spatial model
-  # all.out.preds <- all.preds %>% filter(y < limit)
-  
+  all.out.preds <- cbind(true.data2, all.preds) %>% filter(true.data2$y < limit)  
   
   #calculating rmspe 
   all.out.rmspe <- sqrt(sum((log(all.out.preds$y) - all.out.preds$all.preds)^2)/nrow(all.out.preds))
   
+  # eLPM ##################################################
   
-  # equal weights ##################################################
-  
-  # inclusion weights
+  # equal inclusion probs
   group.p <- ep
   
-  # samples will be collected in this data frame
+  # samples will be collected in this df
   lpm.app2.sample <- data.frame()
   
-  # disabled for testing constant sample locs
+  # spatial balance values will be collected in this df
   lpm.app2.sbs <- data.frame(double())
   
-  # sampling different wells at each upcoming event using equal weigths
-  # Disable when testing constant samp locs
-  
+  # sampling different wells at each event using equal prob LPM
   for (k in 1:length(ts2)) {
 
     # randomly selecting wells to sample
@@ -714,33 +503,10 @@ for (i in 1:100) {
 
   }
   
-  # testing constant sampling locs  
-########################################  
-  # # randomly selecting wells to sample
-  # samp.wells <- as.data.frame(lpm2_kdtree(x=well.list, prob=group.p))
-  # colnames(samp.wells) <- "well.id"
-  # # at each time slice
-  # samp.time <- as.data.frame(ts2)
-  # colnames(samp.time) <- "Time"
-  # # selecting observations from the selected wells and at the selected time slice
-  # temp.samples <- left_join(samp.time, obs.fut)
-  # temp.samples <- left_join(samp.wells, temp.samples)
-  # # collecting samples from the different time slices
-  # lpm.app2.sample <- rbind(lpm.app2.sample, temp.samples)
-  # # calculating spatial balance
-  # lpm.app2.sb <- BalancedSampling::sb(p=ep, x=cbind(well_coords$X1, well_coords$X2), s=c(samp.wells$well.id))
-########################################
-  
   # collecting samples
   lpm.app2.samples[[i]] <- lpm.app2.sample
-  
-  # disabled for testing constant samp locs
   colnames(lpm.app2.sbs) <- c("lpm.app2.sbs")
   
-  # spatial model
-  # lpm.app2.model <- mgcv::gam(data = lpm.app2.sample, formula = log(y) ~ s(X1,X2, k=6))
-  
-  # disabeled for checking spatial model
   # modelling samples
   lpm.app2.model <- sm.st(
     x = lpm.app2.sample[,3:4],
@@ -752,69 +518,45 @@ for (i in 1:100) {
     pord = pord
   )
   
-  ################################## Whole domain
-  
-  # disabeled for checking spatial model
-  # calculating predictions on the grid
+  # calculating model predictions for surface
   lpm.app2.preds <- fut.B$B %*% lpm.app2.model$alpha
   
-  # spatial model
-  # lpm.app2.preds <- predict.gam(lpm.app2.model, newdata = true.data2)
-  
-  # lpm.app2.preds <- cbind(true.data2, lpm.app2.preds)
-  
-  # spatial model
-  # lpm.app2.rmspe <- sqrt(sum((log(lpm.app2.preds$y) - lpm.app2.preds$lpm.app2.preds)^2)/nrow(lpm.app2.preds))
-  
-  # disabled for testing spatial model
-  # calculating rmspe
+  # calculating rmse for entire surface
   lpm.app2.rmspe <- sqrt(sum((log(true.data2$y) - lpm.app2.preds)^2)/nrow(lpm.app2.preds))
   
-  # RMSE - only observations
+  # calculating rmse for observations only
   lpm.app2.obs.preds <- predict.smst(lpm.app2.model)
-  
   lpm.app2.rmse <- sqrt(sum((log(lpm.app2.sample$y) - lpm.app2.obs.preds)^2)/length(lpm.app2.obs.preds))
   
-  ################################## Plume only
+  # Plume area only #
   
-  # disabled for testing spatial model
   # filtering predictions for plume only
   lpm.app2.plume.preds <- cbind(true.data2, lpm.app2.preds) %>% filter(true.data2$y >= limit)
   
-  # spatial model
-  # lpm.app2.plume.preds <- lpm.app2.preds %>% filter(y >= limit)
-  
-  #calculating rmspe for plume only
+  # calculating rmse for plume only
   lpm.app2.plume.rmspe <- sqrt(sum((log(lpm.app2.plume.preds$y) - lpm.app2.plume.preds$lpm.app2.preds)^2)/nrow(lpm.app2.plume.preds))
   
-  # Plume mass
+  # plume mass
   lpm.app2.pred.plume <- cbind(true.data2, lpm.app2.preds) %>% filter(lpm.app2.preds >= log(limit))
-  
   lpm.app2.pmass <- sum(exp(1)^lpm.app2.pred.plume$lpm.app2.preds)/3500
   
-  ################################## without plume
+  # Area outside plume only #
   
-  # disabled for testing spatial model
   # filtering predictions
   lpm.app2.out.preds <- cbind(true.data2, lpm.app2.preds) %>% filter(true.data2$y < limit)
   
-  # spatial model
-  # lpm.app2.out.preds <- lpm.app2.preds %>% filter(y < limit)
-  
-  #calculating rmspe 
+  #calculating rmse 
   lpm.app2.out.rmspe <- sqrt(sum((log(lpm.app2.out.preds$y) - lpm.app2.out.preds$lpm.app2.preds)^2)/nrow(lpm.app2.out.preds))
   
-  # unequal weights ################################################
-  
+  # pLPM ################################################
   
   # samples will be collected in this data frame
   lpm.up.sample <- data.frame()
   
-  # disabled for testing constant samp locs
+  # spatial balance values will be collected in this df
   lpm.up.sbs <- data.frame()
   
-  # disabled for testing constant samp locs
-  # sampling different wells at each upcoming event using proportional weigths
+  # sampling different wells at each upcoming event using proportional prob LPM
   for (j in 1:length(ts2)) {
 
     # inclusion weights
@@ -841,35 +583,10 @@ for (i in 1:100) {
 
   }
   
-  # Testing constant samp locs
-#################################
-  # # inclusion weights
-  #   group.p <- c(ups[[1]])
-  #   # randomly selecting wells to sample
-  #   samp.wells <- as.data.frame(lpm2_kdtree(x=well.list, prob=group.p))
-  #   colnames(samp.wells) <- "well.id"
-  #   # at each time slice
-  #   samp.time <- as.data.frame(ts2)
-  #   colnames(samp.time) <- "Time"
-  #   # selecting observations from the selected wells and at the selected time slice
-  #   temp.samples <- left_join(samp.time, obs.fut)
-  #   temp.samples <- left_join(samp.wells, temp.samples)
-  #   # collecting samples from the different time slices
-  #   lpm.up.sample <- rbind(lpm.up.sample, temp.samples)
-  #   # calculating spatial balance
-  #   lpm.up.sb <- sb(p=ep, x=cbind(well_coords$X1, well_coords$X2), s=c(samp.wells$well.id))
-################################# 
-  
   # collecting samples
   lpm.up.samples[[i]] <- lpm.up.sample
-  
-  # disabled for testing constant samp locs
   colnames(lpm.up.sbs) <- c("lpm.up.sbs")
   
-  # spatial model
-  # lpm.up.model <- mgcv::gam(data = lpm.up.sample, formula = log(y) ~ s(X1,X2, k=6))
-  
-  # disabled for testing spatial model
   # modelling samples
   lpm.up.model <- sm.st(
     x = lpm.up.sample[,3:4],
@@ -881,68 +598,46 @@ for (i in 1:100) {
     pord = pord
   )
   
-  ############################################### Whole domain
-  
-  # disabled for testing spatial model
-  # calculating predictions on the grid
+  # calculating model predictions for surface
   lpm.up.preds <- fut.B$B %*% lpm.up.model$alpha
   
-  # spatial model
-  # lpm.up.preds <- predict.gam(lpm.up.model, newdata = true.data2)
-  
-  # lpm.up.preds <- cbind(true.data2, lpm.up.preds)
-  
-  # spatial model
-  # lpm.up.rmspe <- sqrt(sum((log(lpm.up.preds$y) - lpm.up.preds$lpm.up.preds)^2)/nrow(lpm.up.preds))
-
-  # disabled for testing spatial model
-  # calculating rmspe
+  # calculating rmse of entire surface
   lpm.up.rmspe <- sqrt(sum((log(true.data2$y) - lpm.up.preds)^2)/nrow(lpm.up.preds))
   
-  # RMSE - only observations
+  # calculating rmse of observations only
   lpm.up.obs.preds <- predict.smst(lpm.up.model)
-  
   lpm.up.rmse <- sqrt(sum((log(lpm.up.sample$y) - lpm.up.obs.preds)^2)/length(lpm.up.obs.preds))
   
-  ############################################### Plume only
+  # Plume area only #
   
-  # disabled for testing spatial model
   # filtering predictions for plume only
   lpm.up.plume.preds <- cbind(true.data2, lpm.up.preds) %>% filter(true.data2$y >= limit)
   
-  # spatial model
-  # lpm.up.plume.preds <- lpm.up.preds %>% filter(y >= limit)
-  
-  #calculating rmspe for plume only
+  # calculating rmse for plume only
   lpm.up.plume.rmspe <- sqrt(sum((log(lpm.up.plume.preds$y) - lpm.up.plume.preds$lpm.up.preds)^2)/nrow(lpm.up.plume.preds))
   
-  # Plume mass
+  # plume mass
   lpm.up.pred.plume <- cbind(true.data2, lpm.up.preds) %>% filter(lpm.up.preds >= log(limit))
   
   lpm.up.pmass <- sum(exp(1)^lpm.up.pred.plume$lpm.up.preds)/3500
   
-  ################################## without plume
+  # Area outside plume only #
   
-  # disabled for testing spatial model
   # filtering predictions
   lpm.up.out.preds <- cbind(true.data2, lpm.up.preds) %>% filter(true.data2$y < limit)
-  
-  # spatial model
-  # lpm.up.out.preds <- lpm.up.preds %>% filter(y < limit)
   
   #calculating rmspe 
   lpm.up.out.rmspe <- sqrt(sum((log(lpm.up.out.preds$y) - lpm.up.out.preds$lpm.up.preds)^2)/nrow(lpm.up.out.preds))
   
-  
-  # simple random sampling ###############################################
+  # SRS ###############################################
   
   # samples will be collected in this data frame
   rand.app2.sample <- data.frame()
-  
-  # Disabled for testing constant samp locs
+
+  # spatial balance values will be collected in this df
   rand.app2.sbs <- data.frame()
   
-# Disabled for testing constant samp locs
+  # sampling different wells at each upcoming event using SRS
   for (u in 1:length(ts2)) {
 
     # randomly selecting wells to sample
@@ -964,35 +659,12 @@ for (i in 1:100) {
     rand.app2.sb <- sb(p=ep, x=cbind(well_coords$X1, well_coords$X2), s=c(temp.samples$well.id))
     rand.app2.sbs <- rbind(rand.app2.sbs, rand.app2.sb)
   }
-
-# testing constant sampling locs
-##################################################
-  # # randomly selecting wells to sample
-  # samp.wells <- as.data.frame(sample(well.list[,1], samp.well.nr))
-  # colnames(samp.wells) <- "well.id"
-  # # at each time slice
-  # samp.time <- as.data.frame(ts2)
-  # colnames(samp.time) <- "Time"
-  # # selecting observations from the selected wells and at the selected time slice
-  # temp.samples <- left_join(samp.time, obs.fut)
-  # temp.samples <- left_join(samp.wells, temp.samples)
-  # # collecting samples from the different time slices
-  # rand.app2.sample <- rbind(rand.app2.sample, temp.samples)
-  # # calculating spatial balance
-  # rand.app2.sb <- sb(p=ep, x=cbind(well_coords$X1, well_coords$X2), s=c(samp.wells$well.id))
-##################################################
   
+  # collecting samples
   rand.app2.samples[[i]] <- rand.app2.sample
-  
-  # Disabled for testing constant samp locs
   colnames(rand.app2.sbs) <- c("rand.app2.sbs")
   
-  # app 2 srs model ---------------------------------------------------------
-  
-  # spatial model
-  # rand.app2.model <- mgcv::gam(data = rand.app2.sample, formula = log(y) ~ s(X1,X2, k=6))
-  
-  # disabled for testing spatial model
+  # modelling samples
   rand.app2.model <- sm.st(
     x = rand.app2.sample[,3:4],
     t = rand.app2.sample[,2],
@@ -1003,126 +675,79 @@ for (i in 1:100) {
     pord = pord
   )
   
-  ############################################### Whole domain
-  
-  # disabled for testing spatial model
-  # calculating predictions on the grid
+  # calculating predictions for surface
   rand.app2.preds <- fut.B$B %*% rand.app2.model$alpha
   
-  # spatial model
-  # rand.app2.preds <- predict.gam(rand.app2.model, newdata = true.data2)
-  
-  # rand.app2.preds <- cbind(true.data2, rand.app2.preds)
-  
-  # spatial model
-  # rand.app2.rmspe <- sqrt(sum((log(rand.app2.preds$y) - rand.app2.preds$rand.app2.preds)^2)/nrow(rand.app2.preds))
-  
-  # disabled for testing spatial model
-  # calculating rmspe
+  # calculating rmse for entire surface
   rand.app2.rmspe <- sqrt(sum((log(true.data2$y) - rand.app2.preds)^2)/nrow(rand.app2.preds))
   
-  # RMSE - only observations
+  # calculating rmse for observations only
   rand.app2.obs.preds <- predict.smst(rand.app2.model)
-  
   rand.app2.rmse <- sqrt(sum((log(rand.app2.sample$y) - rand.app2.obs.preds)^2)/length(rand.app2.obs.preds))
   
-  ############################################### Plume only
+  # Plume area only #
   
-  # disabled for testing spatial model
   # filtering predictions for plume only
   rand.app2.plume.preds <- cbind(true.data2, rand.app2.preds) %>% filter(true.data2$y >= limit)
   
-  # spatial model
-  # rand.app2.plume.preds <- rand.app2.preds %>% filter(y >= limit)
-  
-  #calculating rmspe for plume only
+  # calculating rmse for plume only
   rand.app2.plume.rmspe <- sqrt(sum((log(rand.app2.plume.preds$y) - rand.app2.plume.preds$rand.app2.preds)^2)/nrow(rand.app2.plume.preds))
   
-  # Plume mass
+  # plume mass
   rand.app2.pred.plume <- cbind(true.data2, rand.app2.preds) %>% filter(rand.app2.preds >= log(limit))
-  
   rand.app2.pmass <- sum(exp(1)^rand.app2.pred.plume$rand.app2.preds)/3500
   
-  ################################## without plume
-  
-  # disabled for testing spatial model
+  # Area outside plume only #
+
   # filtering predictions
   rand.app2.out.preds <- cbind(true.data2, rand.app2.preds) %>% filter(true.data2$y < limit)
   
-  # spatial model
-  # rand.app2.out.preds <- rand.app2.preds %>% filter(y < limit)
-  
-  #calculating rmspe 
+  # calculating rmse 
   rand.app2.out.rmspe <- sqrt(sum((log(rand.app2.out.preds$y) - rand.app2.out.preds$rand.app2.preds)^2)/nrow(rand.app2.out.preds))
   
 
-  ############################################## binding results
+  # Collecting results #############################################
   
+  # surface rmse results
   results <- rbind(results, cbind(all.rmspe, all.rmse, rand.app2.rmspe, rand.app2.rmse, lpm.app2.rmspe, lpm.app2.rmse, lpm.up.rmspe, lpm.up.rmse))
-  
+  # plume rmse results
   results.plume <- rbind(results.plume, cbind(all.plume.rmspe, rand.app2.plume.rmspe, lpm.app2.plume.rmspe, lpm.up.plume.rmspe))
-  
+  # outside plume rmse results
   results.out <- rbind(results.out, cbind(all.out.rmspe, rand.app2.out.rmspe, lpm.app2.out.rmspe, lpm.up.out.rmspe))
   
-  # Disabled for testing constant samp locs
+  # spatial balance resutls
   sbs <- rbind(sbs, cbind(all.sbs, rand.app2.sbs, lpm.app2.sbs, lpm.up.sbs))
   
-  # plume mass
+  # plume mass results
   pmass <- rbind(pmass, cbind(all.pmass, rand.app2.pmass, lpm.app2.pmass, lpm.up.pmass))
   
-  # for testing constant samp locs
-  # sbs <- rbind(sbs, cbind(all.sb, rand.app2.sb, lpm.app2.sb, lpm.up.sb))
+  # Ratio of samples from plume #######################################
   
-  ############################################## number of wells in plume vs out plume
-  
-  # all samples from plume
+  # all possoble samples from plume
   all.in.plume <- obs.fut %>%
     filter(y >= limit)
-  
-  # simple random samples from plume
-  rand.in.plume <- rand.app2.sample %>%
-    filter(y >= limit)
-  
-  # euqal prob samples from plume
-  ep.in.plume <- lpm.app2.sample %>%
-    filter(y >= limit)
-  
-  # ep.out.plume <- lpm.app2.sample %>%
-  #   filter(y < limit)
-  
-  # proportional samples from plume
-  up.in.plume <- lpm.up.sample %>%
-    filter(y >= limit)
-  
-  # up.out.plume <- lpm.up.sample %>%
-  #   filter(y < limit)
-  
   all.ratio <- nrow(all.in.plume) / nrow(obs.fut)
   
+  # SRS samples from plume
+  rand.in.plume <- rand.app2.sample %>%
+    filter(y >= limit)
   rand.ratio <- nrow(rand.in.plume) / nrow(rand.app2.sample)
   
-  # # number of wells in plume from equal samples
-  # ep.wells.in <- unique(ep.in.plume$well.id)
-  # # wells total
-  # ep.wells <- unique(lpm.app2.sample$well.id)
-  # ratio of sampled wells in plume vs out plume
-  # ep.ratio <- length(ep.wells.in) / (length(ep.wells) - length(ep.wells.in))
-  
+  # eLPM samples from plume
+  ep.in.plume <- lpm.app2.sample %>%
+    filter(y >= limit)
   ep.ratio <- nrow(ep.in.plume) / nrow(lpm.app2.sample)
   
-  # # number of wells in plume from proportional samples
-  # up.wells.in <- unique(up.in.plume$well.id)
-  # # wells total
-  # up.wells <- unique(lpm.up.sample$well.id)
-  # ratio
-  # up.ratio <- length(up.wells.in) / (length(up.wells) - length(up.wells.in))
-  
+  # pLPM samples from plume
+  up.in.plume <- lpm.up.sample %>%
+    filter(y >= limit)
   up.ratio <- nrow(up.in.plume) / nrow(lpm.up.sample)
   
-  ############################################ binding ratio results
-  
+  # collecting ratio results
   in.ratios <- rbind(in.ratios, cbind(all.ratio, rand.ratio, ep.ratio, up.ratio))
 }
+
+#### SAVING RESULTS ####
 
 results <- rowid_to_column(results)
 save(results, file = paste0(path, 'rmspe_total.RData'))
@@ -1151,66 +776,62 @@ save(sbs, file = paste0(path, 'sbs.RData'))
 pmass <- rowid_to_column(pmass)
 save(pmass, file = paste0(path, 'pmass.RData'))
 
+# saving samples
 save(lpm.app2.samples, file = paste0(path, 'LPM_samples.RData'))
 save(rand.app2.samples, file = paste0(path, 'SRS_samples.RData'))
 save(lpm.up.samples, file = paste0(path, 'pLPM_samples.RData'))
 
+#### OPTIONAL: PLOTTING SOME RESULTS ####
 
+##### RMSE of entire surface ####
 
-# hist(results$rand.app2.rmspe)
-# hist(results$lpm.app2.rmspe)
-
-############################ PLOTTING RESULTS ###############################
-
-############################# whole domain
-
+# lower bound
 min <- min(
   c(
     min(results$all.rmspe), min(results$rand.app2.rmspe), min(results$lpm.app2.rmspe), min(results$lpm.up.rmspe)
   )
 )
-
+# upper bound
 max <- max(
   c(
     max(results$all.rmspe), max(results$rand.app2.rmspe), max(results$lpm.app2.rmspe), max(results$lpm.up.rmspe)
   )
 )
-
+# eLPM box
 ew_plot <- ggplot(data = results, mapping = aes(x = '', y = lpm.app2.rmspe)) +
   geom_boxplot() +
   ylim(min, max) +
   ggtitle("equal weights") +
   theme(axis.title.y=element_blank()) 
-
+# pLPM box
 uw_plot <- ggplot(data = results, mapping = aes(x = '', y = lpm.up.rmspe)) +
   geom_boxplot() +
   ylim(min, max) +
   ggtitle("prop. weights") +
   theme(axis.title.y=element_blank())
-
+# SRS box
 rand_plot <- ggplot(data = results, mapping = aes(x = '', y = rand.app2.rmspe)) +
   geom_boxplot() +
   ylim(min, max) +
   ggtitle("simple random") +
   theme(axis.title.y=element_blank())
-
+# all possible observations for reference
 all_plot <- ggplot(data = results, mapping = aes(x = '', y = all.rmspe)) +
   geom_boxplot() +
   ylim(min, max) +
   ggtitle("all pot. samples") +
   theme(axis.title.y=element_blank())
-
+# grid layout
 layout <- rbind(c(1,2,3,4))
 
-# filename
+# saving plot as png
 png(paste0(path, "rmspe_total.png"), width = 620, height = 400)
 
 grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout, top = text_grob("RMSPE: total", size = 18))
 
 dev.off()
 
-
-############################# whole domain RMSE
+#### RMSE of observations ####
 
 min <- min(
   c(
@@ -1257,8 +878,7 @@ grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout, top 
 
 dev.off()
 
-
-############################# Plume only
+#### RMSE: Plume only ####
 
 min <- min(
   c(
@@ -1305,7 +925,7 @@ grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout, top 
 
 dev.off()
 
-############################# without plume
+#### RMSE outside plume only ####
 
 min <- min(
   c(
@@ -1352,14 +972,7 @@ grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout, top 
 
 dev.off()
 
-############################## plume ratios
-
-# total ratio of wells in plume in true data
-# points.in.plume <- true.data2 %>% filter(y>=limit)
-# obs.in.plume <- inner_join(well_coords, points.in.plume)
-# wells.in.plume <- length(unique(obs.in.plume$well.id))
-# 
-# max.ratio <- wells.in.plume/nrow(well_coords)
+#### Ratio of samples from plume ####
 
 ew_plot <- ggplot(data = in.ratios, mapping = aes(x = '', y = ep.ratio)) +
   geom_boxplot() +
@@ -1401,14 +1014,13 @@ all_plot <- ggplot(data = in.ratios, mapping = aes(x = '', y = all.ratio)) +
 layout <- rbind(c(1,2,3,4))
 
 # filename
-# png(paste0(path, "plume_ratio.png"), width = 620, height = 400)
+png(paste0(path, "plume_ratio.png"), width = 620, height = 400)
 
 grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout)
 
-# dev.off()
+dev.off()
 
-############################# spatial balance
-# change y = ... .sbs for non-constant samp locs, .sb for constant samp locs
+#### Spatial balance ####
 
 ew_plot <- ggplot(data = sbs, mapping = aes(x = '', y = lpm.app2.sbs)) +
   geom_boxplot() +
@@ -1450,18 +1062,19 @@ all_plot <- ggplot(data = sbs, mapping = aes(x = '', y = all.sbs)) +
 layout <- rbind(c(1,2,3,4))
 
 # filename
-# png(paste0(path, "spatial_balance.png"), width = 620, height = 400)
+png(paste0(path, "spatial_balance.png"), width = 620, height = 400)
 
 grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout) #top = text_grob("spatial balance", size = 18))
 
-# dev.off()
+dev.off()
 
+#### Plume mass ####
 
-############################# Plume mass
-
+# calculating real plume mass
 real.plume <- true.data2 %>% filter(y >= limit)
 real.pmass <- sum(real.plume$y)/3500
 
+# different plot depending on under/over prediction
 if (max(pmass[,2:5]) > real.pmass) {
   ew_plot <- ggplot(data = pmass, mapping = aes(x = '', y = lpm.app2.pmass)) +
     geom_boxplot() +
@@ -1520,8 +1133,6 @@ if (max(pmass[,2:5]) > real.pmass) {
     geom_hline(yintercept = real.pmass, color='red')
 }
 
-
-
 layout <- rbind(c(1,2,3,4))
 
 # filename
@@ -1531,11 +1142,9 @@ grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout, top 
 
 dev.off()
 
+#### Plotting monitoring network ####
 
-# plotting network
-
-# plume outline
-# plume coordinates
+# plume outline at final time slice
 plume <- true.data2 %>% filter(Time == 3467.5) %>% filter(y >= limit)
 ps <- cbind(plume$X1, plume$X2)
 
@@ -1550,7 +1159,6 @@ plume.delin <- plume.inpoly %>% filter(plume.inpoly > 1)
 
 # removing indicator column
 plume.delin <- plume.delin %>% select(-plume.inpoly)
-
 
 # filename
 png(paste0(path, "network.png"), width = 620, height = 400)
@@ -1571,14 +1179,14 @@ ggplot(data=true.data %>% filter(Time == 3467.5),
 
 dev.off()
 
+#### Plotting example GIFs of sampling designs and corresponding model estimates through time ####
 
-# plotting examples of samples and predictions
+#### all possible observations ####
 
-# all
-
-# creating df for plotting results
+# creating df of results for plotting
 all.preds.df <- cbind(true.data2, all.preds)
 
+# looping through sampling events
 for (h in 1:length(td2)) {
 
   samp_coords <- obs.fut %>%
@@ -1645,7 +1253,7 @@ saveGIF(expr = {
 movie.name = paste0(path, "all_example.gif"))
 
 
-# rand
+#### SRS ####
 
 # creating df for plotting results
 rand.app2.preds.df <- cbind(true.data2, rand.app2.preds)
@@ -1712,7 +1320,7 @@ saveGIF(expr = {
 }, interval = 1, ani.height=600, ani.width=800,
 movie.name = paste0(path, "rand_example.gif"))
 
-# equal
+#### eLPM ####
 
 # creating df for plotting results
 lpm.app2.preds.df <- cbind(true.data2, lpm.app2.preds)
@@ -1779,7 +1387,7 @@ saveGIF(expr = {
 }, interval = 1, ani.height=600, ani.width=800,
 movie.name = paste0(path, "equal_example.gif"))
 
-# prop
+#### pLPM ####
 
 # creating df for plotting results
 lpm.up.preds.df <- cbind(true.data2, lpm.up.preds)
@@ -1847,7 +1455,7 @@ saveGIF(expr = {
 movie.name = paste0(path, "prop_example.gif"))
 
 
-# real data
+#### Plotting GIF of true plume data ####
 
 for (h in 1:length(td2)) {
 
