@@ -49,6 +49,8 @@ From line 784, the script contains some optinal plotting functions that can be u
 
 ## 4. Results
 
+The results show that SRS and eLPM designs led to more accurate surface estimates with smaller sample sizes but given sufficient sample size, pLPM leads to a similar accuracy. However, looking at the plume surface in isolation, pLPM designs led to more accurate models. Therefore, given a sufficient sample size, pLPM can offer more detailed concentration surface estimates within the plume compared to SRS and eLPM.
+
 ### RMSE (simple, mid, complex)
 <img width="2565" height="600" alt="RMSE" src="https://github.com/user-attachments/assets/e15742f2-a767-4889-ad5e-a631ad2e8dfe" />
 
