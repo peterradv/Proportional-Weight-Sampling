@@ -37,10 +37,10 @@ From line 784, the script contains some optinal plotting functions that can be u
 
 ## 3. Results
 
-### RMSE
+### RMSE (simple, mid, complex)
 <img width="2565" height="600" alt="RMSE" src="https://github.com/user-attachments/assets/e15742f2-a767-4889-ad5e-a631ad2e8dfe" />
 
-### Plume RMSE
+### Plume RMSE (simple, mid, complex)
 <img width="2572" height="600" alt="plumeRMSE" src="https://github.com/user-attachments/assets/ca5b5ba5-e429-4aa7-8557-5d0984cad5ed" />
 
 
