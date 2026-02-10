@@ -31,4 +31,6 @@ The scipt generates the following results:
 - Ratio of samples taken from within the plume boundaries
 - Voronoi polygon derived relative spatial balance values of samples
 - Sum of solute concentraions
-- Sampling designs 
+- Sampling designs
+
+From line 784, the script contains some optinal plotting functions that can be used. These functions create a) boxplots of the results comparing the 3 sampling design approaches b) GIFs of the true concentration surface over time with the sampled wells highlighted at each sampling event.
