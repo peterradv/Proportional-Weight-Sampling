@@ -11,3 +11,24 @@ The "Data" folder contains data sets for 3 hypothetical solute plumes in groundw
 The folder also contians 4 hypothetical groundwater monitoring networks, where the sampling locations represent monitoring wells. The networks consist of 24 and 48 wells arranged in space randomly or on a gird. The corresponding files are grid_24.RData, grid_48.RData, rand_24.RData and rand_48.RData. The monitoring networks were generated using the [01-well_network_gen.R](01-well_network_gen.R) script.
 
 <img width="1192" height="805" alt="GMNs" src="https://github.com/user-attachments/assets/8463f26e-d057-4c35-acdf-6cb5a0fb080f" />
+
+## How to Run The Simulation Study
+
+The simulation study can be run using the [02-prop_weight_sim.R](02-prop_weight_sim.R) script. The folowing parameters should be set a the top of the script:
+
+- total sample size for the moitoring period
+- samples to draw per sampling event
+- number of sampling events
+- path to save results to
+- which plume data set to use
+- which monitoring network to use
+
+The scipt generates the following results:
+
+- RMSE of concentration surface estimates
+- RMSE of concentration surface estimates within the plume boundaries
+- RMSE of concentration surface estimates outside the plume boundaries
+- Ratio of samples taken from within the plume boundaries
+- Voronoi polygon derived relative spatial balance values of samples
+- Sum of solute concentraions
+- Sampling designs 
