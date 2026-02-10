@@ -8,11 +8,11 @@ The "Data" folder contains data sets for 3 hypothetical solute plumes in groundw
 
 ![plumes](https://user-images.githubusercontent.com/85235934/228821955-ca0e73ea-7904-42e6-8850-0ffc01b94650.png)
 
-The folder also contians 4 hypothetical groundwater monitoring networks, where the sampling locations represent monitoring wells. The networks consist of 24 and 48 wells arranged in space randomly or on a gird. The corresponding files are grid_24.RData, grid_48.RData, rand_24.RData and rand_48.RData. The monitoring networks were generated using the [01-well_network_gen.R](01-well_network_gen.R) script.
+The folder also contians 4 hypothetical groundwater monitoring networks, where the sampling locations represent monitoring wells. The networks consist of 24 and 48 wells arranged in space randomly or on a gird. The corresponding files are grid_24.RData (G24), grid_48.RData (G48), rand_24.RData (R24) and rand_48.RData (R48). The monitoring networks were generated using the [01-well_network_gen.R](01-well_network_gen.R) script.
 
 <img width="1192" height="805" alt="GMNs" src="https://github.com/user-attachments/assets/8463f26e-d057-4c35-acdf-6cb5a0fb080f" />
 
-## How to Run The Simulation Study
+## 2. How to Run The Simulation Study
 
 The simulation study can be run using the [02-prop_weight_sim.R](02-prop_weight_sim.R) script. The folowing parameters should be set a the top of the script:
 
@@ -23,7 +23,7 @@ The simulation study can be run using the [02-prop_weight_sim.R](02-prop_weight_
 - which plume data set to use
 - which monitoring network to use
 
-The scipt generates the following results:
+By default, the script performs 100 runs of sampling and using the samples to estimate the concentraiton surface. The scipt generates the following results:
 
 - RMSE of concentration surface estimates
 - RMSE of concentration surface estimates within the plume boundaries
@@ -34,3 +34,13 @@ The scipt generates the following results:
 - Sampling designs
 
 From line 784, the script contains some optinal plotting functions that can be used. These functions create a) boxplots of the results comparing the 3 sampling design approaches b) GIFs of the true concentration surface over time with the sampled wells highlighted at each sampling event.
+
+## 3. Results
+
+### RMSE
+<img width="2565" height="600" alt="RMSE" src="https://github.com/user-attachments/assets/e15742f2-a767-4889-ad5e-a631ad2e8dfe" />
+
+### Plume RMSE
+<img width="2572" height="600" alt="plumeRMSE" src="https://github.com/user-attachments/assets/ca5b5ba5-e429-4aa7-8557-5d0984cad5ed" />
+
+
