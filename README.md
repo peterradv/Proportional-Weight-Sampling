@@ -1,6 +1,6 @@
 # Sampling Long-Term Groundwater Monitoring Networks Using Spatially Balanced Designs with Proportional Inclusion Probabilities
 
-#### Spatially balanced sampling is a popular probability sampling method in environmental monitoring surveys that ensures even spatial coverage over the area of interest. The inclusion probabilities of potential sampling locations in the sampling design can be proportional to auxiliary information, providing control over the sample selection. This simulation study evaluates an approach for using the estimates of spatiotemporal statistical models as auxiliary information to tune sample inclusion probabilities. In the proposed approach, the sample inclusion probabilities are proportional to predicted distances between spatial features of interest, such as boundaries or hotspots of the population, and the sampling locations. The approach allows for using the information from each campaign to adjust the sampling design for the next in long-term monitoring projects, thus tracking changes in the spatial and temporal distribution of the environmental variables of interest. This study evaluates the proportional inclusion probability design on synthetic groundwater quality monitoring data that consist of concentration measurements of a hypothetical solute. Monitoring wells predicted to be closer to or within the boundary of the solute plume are more likely to be selected for sampling. The proposed sampling design is compared to simple random sampling (SRS) without replacement and equal probability spatially balanced sampling (SBS). Evaluation is based on the errors of concentration surface estimates from the three designs. The results show that the proportional probability designs resulted in more accurate concentration surface estimates of the plume.
+#### Spatially balanced sampling is a popular probability sampling method in environmental monitoring surveys that ensures even spatial coverage over the area of interest. The inclusion probabilities of potential sampling locations in the sampling design can be proportional to auxiliary information, providing control over the sample selection. This simulation study evaluates an approach for using the estimates of spatiotemporal statistical models as auxiliary information to tune sample inclusion probabilities. In the proposed approach, the sample inclusion probabilities are proportional to predicted distances between spatial features of interest, such as boundaries or hotspots of the population, and the sampling locations. The approach allows for using the information from each campaign to adjust the sampling design for the next in long-term monitoring projects, thus tracking changes in the spatial and temporal distribution of the environmental variables of interest. This study evaluates the proportional inclusion probability design on synthetic groundwater quality monitoring data that consist of concentration measurements of a hypothetical solute. Monitoring wells predicted to be closer to or within the boundary of the solute plume are more likely to be selected for sampling. The proposed sampling design is compared to simple random sampling (SRS) without replacement and equal probability spatially balanced sampling. Evaluation is based on the errors of concentration surface estimates from the three designs. The results show that the proportional probability designs resulted in more accurate concentration surface estimates of the plume.
 
 ## 1. Data Sets
 
@@ -12,16 +12,28 @@ The folder also contians 4 hypothetical groundwater monitoring networks, where t
 
 <img width="1192" height="805" alt="GMNs" src="https://github.com/user-attachments/assets/8463f26e-d057-4c35-acdf-6cb5a0fb080f" />
 
-## 2. How to Run The Simulation Study
+## 2. Methods
+
+### Spatially Balanced Sampling Method
+
+This study used the Local Pivotal Method by [Grafström et al. (2012)](https://doi.org/10.1111/j.1541-0420.2011.01699.x) as the basis spatially balanced sampling design method. More specifically, the LPM2 implementation using the ['SamplingBigData'](https://doi.org/10.32614/CRAN.package.SamplingBigData) R package. The proposed algorithm tunes the inclusion probabilities of the LPM designs to be proportional to the shortest distances between the monitoring wells and the estimated plume boundaries. The equal probability designs are denoted 'eLPM' and the suggested proportional probability designs are denoted 'pLPM'.
+
+### Modeling Approach
+
+
+
+### Algorithm for Tuning Proportional Inclusion Probabilities
+
+## 3. How to Run The Simulation Study
 
 The simulation study can be run using the [02-prop_weight_sim.R](02-prop_weight_sim.R) script. The folowing parameters should be set a the top of the script:
 
-- total sample size for the moitoring period
-- samples to draw per sampling event
-- number of sampling events
+- samples to draw per sampling event ('spe')
+- number of sampling events ('noe'; should be 10, 8, 6, 5, 4, 3 or 2)
+- total sample size for the moitoring period ('samps'; samples per event x number of events)
 - path to save results to
-- which plume data set to use
-- which monitoring network to use
+- which plume data set to use (path to simple, mid or complex plume data file)
+- which monitoring network to use (path to monitoring network data file)
 
 By default, the script performs 100 runs of sampling and using the samples to estimate the concentraiton surface. The scipt generates the following results:
 
@@ -35,7 +47,7 @@ By default, the script performs 100 runs of sampling and using the samples to es
 
 From line 784, the script contains some optinal plotting functions that can be used. These functions create a) boxplots of the results comparing the 3 sampling design approaches b) GIFs of the true concentration surface over time with the sampled wells highlighted at each sampling event.
 
-## 3. Results
+## 4. Results
 
 ### RMSE (simple, mid, complex)
 <img width="2565" height="600" alt="RMSE" src="https://github.com/user-attachments/assets/e15742f2-a767-4889-ad5e-a631ad2e8dfe" />
