@@ -2,10 +2,10 @@
 
 #################### 20 samps #################
 
-assign('sg20_2x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\20samps\\2x10\\rmspe_plume.RData")))
-assign('sg20_4x5', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\20samps\\4x5\\rmspe_plume.RData")))
-assign('sg20_5x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\20samps\\5x4\\rmspe_plume.RData")))
-assign('sg20_10x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\20samps\\10x2\\rmspe_plume.RData")))
+assign('sg20_2x10', get(load("results\\simple plume\\grid_48\\20samps\\2x10\\rmspe_plume.RData")))
+assign('sg20_4x5', get(load("results\\simple plume\\grid_48\\20samps\\4x5\\rmspe_plume.RData")))
+assign('sg20_5x4', get(load("results\\simple plume\\grid_48\\20samps\\5x4\\rmspe_plume.RData")))
+assign('sg20_10x2', get(load("results\\simple plume\\grid_48\\20samps\\10x2\\rmspe_plume.RData")))
 
 # 20 samples in total - balanced lpm
 df <- data.frame(
@@ -42,7 +42,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\20samps\\medRMSPE_plume.png"),
+png(paste0("results\\simple plume\\grid_48\\20samps\\medRMSPE_plume.png"),
     width = 500, height = 400)
 
 # ggplot(data = df, aes(x=freq, y=medRMSPE)) +
@@ -70,10 +70,10 @@ dev.off()
 
 #################### 30 samps #################
 
-assign('sg30_3x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\3x10\\rmspe_plume.RData")))
-assign('sg30_5x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\6x5\\rmspe_plume.RData")))
-assign('sg30_10x3', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\10x3\\rmspe_plume.RData")))
-# assign('sg30_15x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\15x2\\rmspe_plume.RData")))
+assign('sg30_3x10', get(load("results\\complex plume\\rand_24\\30samps\\3x10\\rmspe_plume.RData")))
+assign('sg30_5x6', get(load("results\\complex plume\\rand_24\\30samps\\6x5\\rmspe_plume.RData")))
+assign('sg30_10x3', get(load("results\\complex plume\\rand_24\\30samps\\10x3\\rmspe_plume.RData")))
+# assign('sg30_15x2', get(load("results\\complex plume\\rand_24\\30samps\\15x2\\rmspe_plume.RData")))
 
 # 30 samples in total - balanced lpm
 df <- data.frame(
@@ -94,7 +94,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM') #'pLPM'
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\medRMSPE_plume.png"),
+png(paste0("results\\complex plume\\rand_24\\30samps\\medRMSPE_plume.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medRMSPE)) +
@@ -108,10 +108,10 @@ dev.off()
 
 #################### 60 samps #################
 
-assign('sg60_6x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\6x10\\rmspe_plume.RData")))
-assign('sg60_10x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\10x6\\rmspe_plume.RData")))
-assign('sg60_15x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\15x4\\rmspe_plume.RData")))
-assign('sg60_30x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\20x3\\rmspe_plume.RData")))
+assign('sg60_6x10', get(load("results\\complex plume\\rand_24\\60samps\\6x10\\rmspe_plume.RData")))
+assign('sg60_10x6', get(load("results\\complex plume\\rand_24\\60samps\\10x6\\rmspe_plume.RData")))
+assign('sg60_15x4', get(load("results\\complex plume\\rand_24\\60samps\\15x4\\rmspe_plume.RData")))
+assign('sg60_30x2', get(load("results\\complex plume\\rand_24\\60samps\\20x3\\rmspe_plume.RData")))
 
 # 60 samples in total - balanced lpm
 df <- data.frame(
@@ -132,7 +132,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\medRMSPE_plume.png"),
+png(paste0("results\\complex plume\\rand_24\\60samps\\medRMSPE_plume.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medRMSPE)) +
@@ -146,10 +146,10 @@ dev.off()
 
 #################### 120 samps #################
 
-assign('sg120_12x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\12x10\\rmspe_total.RData")))
-assign('sg120_20x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\15x8\\rmspe_total.RData")))
-assign('sg120_30x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\24x5\\rmspe_total.RData")))
-# assign('sg120_40x3', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test_convex\\120samps\\24x5\\rmspe_plume.RData")))
+assign('sg120_12x10', get(load("results\\complex plume\\rand_24\\120samps\\12x10\\rmspe_total.RData")))
+assign('sg120_20x6', get(load("results\\complex plume\\rand_24\\120samps\\15x8\\rmspe_total.RData")))
+assign('sg120_30x4', get(load("results\\complex plume\\rand_24\\120samps\\24x5\\rmspe_total.RData")))
+# assign('sg120_40x3', get(load("results\\complex plume\\rand_24\\120samps\\24x5\\rmspe_plume.RData")))
 
 # 120 samples in total - balanced lpm
 df <- data.frame(
@@ -170,7 +170,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM') #'pLPM'
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\medRMSPE_total.png"),
+png(paste0("results\\complex plume\\rand_24\\120samps\\medRMSPE_total.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medRMSPE)) +
@@ -184,10 +184,10 @@ dev.off()
 
 #################### 240 samps #################
 
-assign('sg240_24x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\240samps\\24x10\\rmspe_plume.RData")))
-assign('sg240_30x8', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\240samps\\30x8\\rmspe_plume.RData")))
-assign('sg240_40x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\240samps\\40x6\\rmspe_plume.RData")))
-assign('sg240_48x5', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\240samps\\48x5\\rmspe_plume.RData")))
+assign('sg240_24x10', get(load("results\\simple plume\\grid_48\\240samps\\24x10\\rmspe_plume.RData")))
+assign('sg240_30x8', get(load("results\\simple plume\\grid_48\\240samps\\30x8\\rmspe_plume.RData")))
+assign('sg240_40x6', get(load("results\\simple plume\\grid_48\\240samps\\40x6\\rmspe_plume.RData")))
+assign('sg240_48x5', get(load("results\\simple plume\\grid_48\\240samps\\48x5\\rmspe_plume.RData")))
 
 # 240 samples in total - balanced lpm
 df <- data.frame(
@@ -208,7 +208,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\simple plume\\grid_48\\noise_0\\freq_test\\240samps\\medRMSPE_plume.png"),
+png(paste0("results\\simple plume\\grid_48\\240samps\\medRMSPE_plume.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medRMSPE)) +
@@ -228,10 +228,10 @@ real.pmass <- sum(plume.dat$y)/3500
 
 #################### 20 samps #################
 
-assign('sg20_2x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\20samps\\2x10\\pmass.RData")))
-assign('sg20_4x5', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\20samps\\4x5\\pmass.RData")))
-assign('sg20_5x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\20samps\\5x4\\pmass.RData")))
-assign('sg20_10x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\20samps\\10x2\\pmass.RData")))
+assign('sg20_2x10', get(load("results\\complex plume\\rand_48\\20samps\\2x10\\pmass.RData")))
+assign('sg20_4x5', get(load("results\\complex plume\\rand_48\\20samps\\4x5\\pmass.RData")))
+assign('sg20_5x4', get(load("results\\complex plume\\rand_48\\20samps\\5x4\\pmass.RData")))
+assign('sg20_10x2', get(load("results\\complex plume\\rand_48\\20samps\\10x2\\pmass.RData")))
 
 # 20 samples in total - balanced lpm
 df <- data.frame(
@@ -249,7 +249,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\20samps\\medpmass.png"),
+png(paste0("results\\complex plume\\rand_48\\20samps\\medpmass.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medpmass)) +
@@ -264,10 +264,10 @@ dev.off()
 
 #################### 30 samps #################
 
-assign('sg30_3x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\3x10\\pmass.RData")))
-assign('sg30_5x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\6x5\\pmass.RData")))
-assign('sg30_10x3', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\10x3\\pmass.RData")))
-# assign('sg30_15x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\30samps\\15x2\\pmass.RData")))
+assign('sg30_3x10', get(load("results\\complex plume\\rand_24\\30samps\\3x10\\pmass.RData")))
+assign('sg30_5x6', get(load("results\\complex plume\\rand_24\\30samps\\6x5\\pmass.RData")))
+assign('sg30_10x3', get(load("results\\complex plume\\rand_24\\30samps\\10x3\\pmass.RData")))
+# assign('sg30_15x2', get(load("results\\complex plume\\rand_48\\30samps\\15x2\\pmass.RData")))
 
 # 30 samples in total - balanced lpm
 df <- data.frame(
@@ -285,7 +285,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM') #'pLPM'
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\30samps\\medpmass.png"),
+png(paste0("results\\complex plume\\rand_24\\30samps\\medpmass.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medpmass)) +
@@ -300,10 +300,10 @@ dev.off()
 
 #################### 60 samps #################
 
-assign('sg60_6x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\6x10\\pmass.RData")))
-assign('sg60_10x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\10x6\\pmass.RData")))
-assign('sg60_15x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\15x4\\pmass.RData")))
-assign('sg60_30x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\20x3\\pmass.RData")))
+assign('sg60_6x10', get(load("results\\complex plume\\rand_24\\60samps\\6x10\\pmass.RData")))
+assign('sg60_10x6', get(load("results\\complex plume\\rand_24\\60samps\\10x6\\pmass.RData")))
+assign('sg60_15x4', get(load("results\\complex plume\\rand_24\\60samps\\15x4\\pmass.RData")))
+assign('sg60_30x2', get(load("results\\complex plume\\rand_24\\60samps\\20x3\\pmass.RData")))
 
 # 60 samples in total - balanced lpm
 df <- data.frame(
@@ -321,7 +321,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\60samps\\medpmass.png"),
+png(paste0("results\\complex plume\\rand_24\\60samps\\medpmass.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medpmass)) +
@@ -336,10 +336,10 @@ dev.off()
 
 #################### 120 samps #################
 
-assign('sg120_12x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\12x10\\pmass.RData")))
-assign('sg120_20x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\15x8\\pmass.RData")))
-assign('sg120_30x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\24x5\\pmass.RData")))
-# assign('sg120_40x3', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test_convex\\120samps\\24x5\\pmass.RData")))
+assign('sg120_12x10', get(load("results\\complex plume\\rand_24\\120samps\\12x10\\pmass.RData")))
+assign('sg120_20x6', get(load("results\\complex plume\\rand_24\\120samps\\15x8\\pmass.RData")))
+assign('sg120_30x4', get(load("results\\complex plume\\rand_24\\120samps\\24x5\\pmass.RData")))
+# assign('sg120_40x3', get(load("results\\complex plume\\rand_24\\120samps\\24x5\\pmass.RData")))
 
 # 120 samples in total - balanced lpm
 df <- data.frame(
@@ -357,7 +357,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM') #'pLPM'
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_24\\noise_15\\freq_test\\120samps\\medpmass.png"),
+png(paste0("results\\complex plume\\rand_24\\120samps\\medpmass.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medpmass)) +
@@ -372,10 +372,10 @@ dev.off()
 
 #################### 240 samps #################
 
-assign('sg240_24x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\240samps\\24x10\\pmass.RData")))
-assign('sg240_30x8', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\240samps\\30x8\\pmass.RData")))
-assign('sg240_40x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\240samps\\40x6\\pmass.RData")))
-assign('sg240_48x5', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\240samps\\48x5\\pmass.RData")))
+assign('sg240_24x10', get(load("results\\complex plume\\rand_48\\240samps\\24x10\\pmass.RData")))
+assign('sg240_30x8', get(load("results\\complex plume\\rand_48\\240samps\\30x8\\pmass.RData")))
+assign('sg240_40x6', get(load("results\\complex plume\\rand_48\\240samps\\40x6\\pmass.RData")))
+assign('sg240_48x5', get(load("results\\complex plume\\rand_48\\240samps\\48x5\\pmass.RData")))
 
 # 240 samples in total - balanced lpm
 df <- data.frame(
@@ -393,7 +393,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48\\noise_0\\freq_test\\240samps\\medpmass.png"),
+png(paste0("results\\complex plume\\rand_48\\240samps\\medpmass.png"),
     width = 500, height = 400)
 
 ggplot(data = df, aes(x=freq, y=medpmass)) +
@@ -412,10 +412,10 @@ dev.off()
 up95 <- function(vector) quantile(vector, 0.975)
 low95 <- function(vector) quantile(vector, 0.025)
 
-assign('sg60_6x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\30samps\\3x10\\pmass.RData")))
-assign('sg60_10x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\60samps\\6x10\\pmass.RData")))
-assign('sg60_15x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\120samps\\12x10\\pmass.RData")))
-assign('sg60_30x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\240samps\\24x10\\pmass.RData")))
+assign('sg60_6x10', get(load("results\\complex plume\\rand_48\\30samps\\3x10\\pmass.RData")))
+assign('sg60_10x6', get(load("results\\complex plume\\rand_48\\60samps\\6x10\\pmass.RData")))
+assign('sg60_15x4', get(load("results\\complex plume\\rand_48\\120samps\\12x10\\pmass.RData")))
+assign('sg60_30x2', get(load("results\\complex plume\\rand_48\\240samps\\24x10\\pmass.RData")))
 
 
 # 60 samples in total - balanced lpm
@@ -454,7 +454,7 @@ df <- data.frame(
 
 
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\pmass_ratio.png"),
+png(paste0("results\\complex plume\\rand_48\\pmass_ratio.png"),
     width = 1000, height = 800)
 
 # ggplot(data = df, aes(x=samples, y=medpmass)) +
@@ -488,13 +488,13 @@ dev.off()
 # boxplots
 
 #30
-load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\30samps\\3x10\\pmass.RData")
+load("results\\complex plume\\rand_48\\30samps\\3x10\\pmass.RData")
 #60
-load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\60samps\\6x10\\pmass.RData")
+load("results\\complex plume\\rand_48\\60samps\\6x10\\pmass.RData")
 #120
-load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\120samps\\12x10\\pmass.RData")
+load("results\\complex plume\\rand_48\\120samps\\12x10\\pmass.RData")
 #240
-load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\240samps\\24x10\\pmass.RData")
+load("results\\complex plume\\rand_48\\240samps\\24x10\\pmass.RData")
 
 if (max(pmass[,2:5]) > real.pmass) {
   ew_plot <- ggplot(data = pmass/real.pmass, mapping = aes(x = '', y = lpm.app2.pmass)) +
@@ -607,7 +607,7 @@ if (max(pmass[,2:5]) > real.pmass) {
 layout <- rbind(c(1,2,3,4))
 
 # filename
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\240samps\\pmass_ratio_box.png"),
+png(paste0("results\\complex plume\\rand_48\\240samps\\pmass_ratio_box.png"),
     width = 800, height = 600)
 
 grid.arrange(all_plot, rand_plot, ew_plot, uw_plot, layout_matrix = layout) #, top = text_grob("plume mass", size = 18))
@@ -616,10 +616,10 @@ dev.off()
 
 ####################### RMSPE ###########################################################
 
-assign('sg60_6x10', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\30samps\\3x10\\rmspe_total.RData")))
-assign('sg60_10x6', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\60samps\\6x10\\rmspe_total.RData")))
-assign('sg60_15x4', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\120samps\\12x10\\rmspe_total.RData")))
-assign('sg60_30x2', get(load("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\240samps\\24x10\\rmspe_total.RData")))
+assign('sg60_6x10', get(load("results\\complex plume\\rand_48\\30samps\\3x10\\rmspe_total.RData")))
+assign('sg60_10x6', get(load("results\\complex plume\\rand_48\\60samps\\6x10\\rmspe_total.RData")))
+assign('sg60_15x4', get(load("results\\complex plume\\rand_48\\120samps\\12x10\\rmspe_total.RData")))
+assign('sg60_30x2', get(load("results\\complex plume\\rand_48\\240samps\\24x10\\rmspe_total.RData")))
 
 
 # plot(x=sg60_10x6$lpm.app2.rmse, y=sg60_15x4$lpm.app2.rmse)
@@ -702,7 +702,7 @@ df <- data.frame(
              'pLPM', 'pLPM', 'pLPM', 'pLPM', 'pLPM')
 )
 
-png(paste0("C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\rmspe_samples.png"),
+png(paste0("results\\complex plume\\rand_48\\rmspe_samples.png"),
    width = 800, height = 600)
 
 # ggplot(data = df, aes(x=samples, y=medRMSPE)) +
@@ -737,9 +737,9 @@ dev.off()
 up95 <- function(vector) quantile(vector, 0.975)
 low95 <- function(vector) quantile(vector, 0.025)
 
-load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//data//complex_plume.RData")
+load("data//complex_plume.RData")
 
-path <- 'C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\'
+path <- 'results\\complex plume\\rand_48\\'
 samp <- 240
 file <- 'rmspe_plume'
 
