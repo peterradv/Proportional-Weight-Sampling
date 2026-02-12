@@ -1,9 +1,9 @@
 
 # where to save figures
-path <- "C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\GWSDAT\\chull\\comp_ex\\test\\"
+path <- "..."
 
 # real data - ONLY TO TEST GWSDAT EXAMPLES
-load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//data//comp_ex.RData")
+load("data//comp_ex.RData")
 
 # unit corrections ug/l to mg/l
 results_uni <- ifelse(e_benzene_data$Units == 'ug/l', e_benzene_data$Results / 1000, e_benzene_data$Results)
@@ -29,7 +29,7 @@ obs <- e_benzene_data_uni %>%
 # obs <- obs[sample(nrow(obs), 300), ]
 
 # loading smst functions
-source("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//sm-st.R",
+source("data//sm-st.R",
        chdir = TRUE)
 
 # model settings
