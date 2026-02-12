@@ -45,7 +45,7 @@ By default, the script performs 100 runs of sampling and using the samples to es
 - Sum of solute concentraions
 - Sampling designs
 
-From line 784, the script contains some optinal plotting functions that can be used. These functions create a) boxplots of the results comparing the 3 sampling design approaches b) GIFs of the true concentration surface over time with the sampled wells highlighted at each sampling event.
+From line 784, the script contains some optinal plotting functions that can be used. These functions create a) boxplots of the results comparing the 3 sampling design approaches b) GIFs of the true concentration surface over time with the sampled wells highlighted at each sampling event. The scripts [04-plot_results.R](04-plot_results.R) and [plotting_v2.R](plotting_v2.R) provide options for plotting the results.
 
 ## 4. Results
 
@@ -57,4 +57,4 @@ The results show that SRS and eLPM designs led to more accurate surface estimate
 ### Plume RMSE (simple, mid, complex)
 <img width="2572" height="600" alt="plumeRMSE" src="https://github.com/user-attachments/assets/ca5b5ba5-e429-4aa7-8557-5d0984cad5ed" />
 
-
+The results were plotted using the [plotting_v2.R](plotting_v2.R) script.
