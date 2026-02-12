@@ -18,7 +18,7 @@ freq <- paste0(spe, 'x', noe, "\\") # frequency
 #### SAVING/LOADING PATHS ####
 
 # saving path
-path0 <- "C:\\Users\\..."
+path0 <- "results\\"
 # subfolder based on sampling frequency - should be created before running
 path <- paste0(path0, samps, noe, '\\')
 
