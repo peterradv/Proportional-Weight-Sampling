@@ -3,13 +3,13 @@
 # Observations as uploaded by user ----------------------------------------
 
 # where to save figures
-path <- "C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\GWSDAT\\chull\\complex_rand_24_3\\"
+path <- "..."
 
 # plume data
-load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//data//complex_plume.RData")
+load("data//complex_plume.RData")
 
 # well coordinates
-load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//Balanced Sampling for Groundwater Monitoring//Comparison of BSMs//well_placement//rand_24_3.RData")
+load("data//rand_24.RData")
 
 
 # Trimming data if you only want to work with convex hull
@@ -74,7 +74,7 @@ obs <- left_join(well_coords, true.data)
 
 
 # loading smst functions
-source("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//sm-st.R",
+source("data//sm-st.R",
        chdir = TRUE)
 
 # model settings
