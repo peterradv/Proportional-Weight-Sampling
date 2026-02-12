@@ -18,15 +18,15 @@ freq <- paste0(spe, 'x', noe, "\\") # frequency
 #### SAVING/LOADING PATHS ####
 
 # saving path
-path0 <- "C:\\Users\\2608904R\\OneDrive - University of Glasgow\\PhD\\Balanced Sampling for Groundwater Monitoring\\Simulation Study\\sim_tests\\complex plume\\rand_48_3\\noise_15\\nseg_6\\convex\\"
-# subfolder based on sampling frequency
+path0 <- "C:\\Users\\..."
+# subfolder based on sampling frequency - should be created before running
 path <- paste0(path0, samps, noe, '\\')
 
 # loading plume data
-load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//data//complex_plume.RData")
+load("data//complex_plume.RData")
 
 # loading well coordinates
-load("C://Users//2608904R//OneDrive - University of Glasgow//PhD//Balanced Sampling for Groundwater Monitoring//Comparison of BSMs//well_placement//rand_3.RData")
+load("data//rand_24.RData")
 
 #### TRIMMING DATA (OPTIONAL) ####
 # to work with the convex hull only (area enclosed by wells) instead of the whole spatial domain, enable next part:
@@ -171,7 +171,7 @@ plumedist <- function(data, point, plume.limit) {
 #### MODEL OF PAST OBSERVATIONS ####
 
 # loading smst modeling functions
-source("C://Users//2608904R//OneDrive - University of Glasgow//PhD//well_influence_analysis_sim_study//sm-st.R",
+source("data//sm-st.R",
        chdir = TRUE)
 
 # model settings
